@@ -3,7 +3,7 @@
 
 // init project
 
-cosnt PORT = process.env.PORT
+const PORT = process.env.PORT
 
 var express = require('express');
 

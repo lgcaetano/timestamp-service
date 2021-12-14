@@ -3,6 +3,16 @@
 
 // init project
 var express = require('express');
+
+function isNum(string){
+  return !isNaN(parseFloat(string))
+}
+
+function isValidDateString(string){
+  return !isNaN(Date.parse(string))
+}
+
+
 var app = express();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
@@ -27,6 +37,39 @@ app.get("/api/hello", function (req, res) {
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+
+function zeroLeft(number){
+  return number < 10 ? "0" + number : number
+}
+
+
+
+function dateToString(date){
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return `${days[date.getUTCDay()]}, ${zeroLeft(date.getUTCDate())} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()} ${zeroLeft(date.getUTCHours())}:${zeroLeft(date.getUTCMinutes())}:${zeroLeft(date.getUTCSeconds())} GMT`
+}
+
+
+
+app.use('/api/:date?', (req, res) => {
+
+  let date = req.params.date != undefined ? undefined : new Date()
+
+  if(isValidDateString(req.params.date)){
+    date = new Date(req.params.date)
+  } else{
+    if(isNum(req.params.date))
+      date = new Date(parseInt(req.params.date))
+    else if(date == undefined)
+      return res.json({ error: "invalid Date" })
+  }
+
+
+  res.json({ unix: date.getTime(), utc: dateToString(date)})
+
+})

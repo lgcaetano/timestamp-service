@@ -2,6 +2,9 @@
 // where your node app starts
 
 // init project
+
+cosnt PORT = process.env.PORT
+
 var express = require('express');
 
 function isNum(string){
@@ -37,7 +40,7 @@ app.get("/api/hello", function (req, res) {
 
 
 // listen for requests :)
-var listener = app.listen(3000, function () {
+var listener = app.listen(PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
